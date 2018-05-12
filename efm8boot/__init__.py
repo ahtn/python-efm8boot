@@ -7,7 +7,9 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import efm8boot.records
 import efm8boot.ids
-from efm8boot.bootloader import EFM8BootloaderHID
+
+from efm8boot.bootloader import EFM8Bootloader
+from efm8boot.hid_bootloader import EFM8BootloaderHID, find_devices
 
 if __name__ == '__main__':
     from efm8boot.records import *

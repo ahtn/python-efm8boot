@@ -1,8 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright 2018 jem@seethis.link
+# Licensed under the MIT license (http://opensource.org/licenses/MIT)
+
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-__version__ = '0.0.1'
+__version__ = '0.0.3'
 
 here = path.abspath(path.dirname(__file__))
 
@@ -32,6 +39,7 @@ setup(
     ],
     keywords='efm8 bootloader 8051',
     packages=find_packages(exclude=['docs', 'tests*']),
+    scripts = ['scripts/efm8boot-cli.py'],
     include_package_data=True,
     author='jem',
     install_requires=install_requires,

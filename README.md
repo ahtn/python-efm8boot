@@ -1,9 +1,6 @@
 efm8 boot
 ===============================
 
-version number: 0.0.1
-author: jem
-
 Overview
 --------
 

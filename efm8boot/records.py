@@ -26,14 +26,37 @@ RANGE_ERROR = 0x41
 BADID = 0x42
 CRC_ERROR = 0x43
 
+ERROR_TO_STRING = {
+    ACK : "0x40",
+    RANGE_ERROR : "RANGE_ERROR",
+    BADID : "BADID",
+    CRC_ERROR : "CRC_ERROR",
+}
+
+RECORD_HEADER_SIZE = 3
+
 class Record(object):
+    """
+    Base class for EFM8 bootloader records.
+
+    Format is:
+        FRAME_START_BYTE(0x24) : 1 byte
+        length                 : 1 byte in range [3,131]
+                                 NOTE: Count starts from the command id field
+        command id             : 1 byte
+        data                   : 2-130 bytes
+    """
     def __init__(self, cmd, data):
         self.cmd = cmd
         self.data = data
 
     def to_bytes(self):
-        length = len(self.data)
-        assert(3 <= length+3 <= 131)
+        assert(2 <= len(self.data) <= 130)
+
+        # The length field needs to include everything after it, so need
+        # to add +1 for the command ID.
+        length = len(self.data) + 1
+
         return bytes([
             FRAME_START_BYTE, # first byte frame start byte 0x24
             length,
@@ -78,6 +101,7 @@ class EraseRecord(Record):
     """
     def __init__(self, addr, data):
         address = struct.pack('> H', addr)
+        assert(0 <= len(data) <= 128)
         record_data = address + bytes(data)
         super().__init__(CMD_ERASE, record_data)
 
@@ -94,6 +118,7 @@ class WriteRecord(Record):
     """
     def __init__(self, addr, data):
         address = struct.pack('> H', addr)
+        assert(1 <= len(data) <= 128)
         record_data = address + bytes(data)
         super().__init__(CMD_WRITE, record_data)
 
@@ -139,6 +164,6 @@ class RunAppRecord(Record):
     Response:
         ACK(0x40) -> success
     """
-    def __init__(self, option=0xffff):
+    def __init__(self, option=0x0000):
         record_data = struct.pack('> H', option)
         super().__init__(CMD_RUN_APP, record_data)

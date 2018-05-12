@@ -13,13 +13,13 @@ EFM8_PREFIX = 0x2800
 EFM8Info = namedtuple(
     'EFM8Info',
     " ".join([
-        "chip_id",
+        "chipID",
         "name",
-        "flash_size",
-        "pin_count",
+        "flashSize",
+        "pinCount",
         "package",
-        "page_size",
-        "bootloader_start",
+        "pageSize",
+        "bootloaderStart",
     ])
 )
 
