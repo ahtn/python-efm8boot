@@ -74,7 +74,7 @@ class IdentifyRecord(Record):
     def __init__(self, id):
         assert(isinstance(id, int) and 0 <= id <= 0xFFFF)
         record_data = struct.pack('>H', id)
-        super().__init__(CMD_IDENTIFY, record_data)
+        super(IdentifyRecord, self).__init__(CMD_IDENTIFY, record_data)
 
 class SetupRecord(Record):
     """
@@ -86,7 +86,7 @@ class SetupRecord(Record):
     """
     def __init__(self, bank=0x00, keys=FLASH_KEYS):
         data = struct.pack('> H B', keys, bank)
-        super().__init__(CMD_SETUP, data)
+        super(SetupRecord, self).__init__(CMD_SETUP, data)
 
 class EraseRecord(Record):
     """
@@ -103,7 +103,7 @@ class EraseRecord(Record):
         address = struct.pack('> H', addr)
         assert(0 <= len(data) <= 128)
         record_data = address + bytes(data)
-        super().__init__(CMD_ERASE, record_data)
+        super(EraseRecord, self).__init__(CMD_ERASE, record_data)
 
 class WriteRecord(Record):
     """
@@ -120,7 +120,7 @@ class WriteRecord(Record):
         address = struct.pack('> H', addr)
         assert(1 <= len(data) <= 128)
         record_data = address + bytes(data)
-        super().__init__(CMD_WRITE, record_data)
+        super(WriteRecord, self).__init__(CMD_WRITE, record_data)
 
 class VerifyRecord(Record):
     """
@@ -133,7 +133,7 @@ class VerifyRecord(Record):
     """
     def __init__(self, addr1, addr2, crc):
         record_data = struct.pack('> H H H', addr1, addr2, crc)
-        super().__init__(CMD_VERIFY, record_data)
+        super(VerifyRecord, self).__init__(CMD_VERIFY, record_data)
 
 class LockRecord(Record):
     """
@@ -150,7 +150,7 @@ class LockRecord(Record):
     """
     def __init__(self, sig=0xff, lock=0xff):
         record_data = struct.pack('>BB', sig, lock)
-        super().__init__(CMD_LOCK, record_data)
+        super(LockRecord, self).__init__(CMD_LOCK, record_data)
 
 class RunAppRecord(Record):
     """
@@ -166,4 +166,4 @@ class RunAppRecord(Record):
     """
     def __init__(self, option=0x0000):
         record_data = struct.pack('> H', option)
-        super().__init__(CMD_RUN_APP, record_data)
+        super(RunAppRecord, self).__init__(CMD_RUN_APP, record_data)

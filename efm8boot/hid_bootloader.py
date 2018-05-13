@@ -51,7 +51,7 @@ class EFM8BootloaderHID(EFM8Bootloader):
         Parameters:
             hidDevice: an easyhid.HIDDevice
         """
-        super().__init__()
+        super(EFM8BootloaderHID, self).__init__()
         self._maxPacketSize = HID_OUT_SIZE
         self._hidDevice = hidDevice
 

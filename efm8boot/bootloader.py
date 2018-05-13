@@ -27,7 +27,7 @@ class EFM8BootloaderProtocolError(EFM8BootloaderError):
     EFM8 bootloader protocol error
     """
     def __init__(self, code):
-        super().__init__(
+        super(EFM8BootloaderProtocolError, self).__init__(
             "EFM8 bootloader error: {}".format(ERROR_TO_STRING[code])
         )
         self.code = code

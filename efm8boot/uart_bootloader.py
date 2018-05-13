@@ -24,7 +24,7 @@ class EFM8BootloaderUART(EFM8Bootloader):
 
         Parameters:
         """
-        super().__init__()
+        super(EFM8BootloaderUART, self).__init__()
         self._maxPacketSize = HID_OUT_SIZE
 
     def connect(self):

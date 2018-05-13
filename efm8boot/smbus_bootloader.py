@@ -25,7 +25,7 @@ class EFM8BootloaderSMBus(EFM8Bootloader):
         Parameters:
             hidDevice: an easyhid.HIDDevice
         """
-        super().__init__(hidDevice)
+        super(EFM8BootloaderSMBus, self).__init__(hidDevice)
         self._maxPacketSize = HID_OUT_SIZE
 
     def connect(self):
