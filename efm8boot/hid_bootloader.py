@@ -9,6 +9,7 @@ import efm8boot
 from efm8boot.bootloader import (EFM8Bootloader, DEBUG_ENABLED)
 
 import easyhid
+import sys
 
 if DEBUG_ENABLED:
     from hexdump import hexdump
@@ -39,11 +40,10 @@ def find_devices(vid=efm8boot.ids.SILICON_LABS_USB_ID, pid=0x0000, mcu=None, pat
 
     return devices
 
-
-HID_IN_SIZE = 4
-HID_OUT_SIZE = 64
-
 class EFM8BootloaderHID(EFM8Bootloader):
+    HID_IN_SIZE = 4
+    HID_OUT_SIZE = 64
+
     def __init__(self, hidDevice):
         """
         Create the EFM8 bootloader device
@@ -52,7 +52,7 @@ class EFM8BootloaderHID(EFM8Bootloader):
             hidDevice: an easyhid.HIDDevice
         """
         super(EFM8BootloaderHID, self).__init__()
-        self._maxPacketSize = HID_OUT_SIZE
+        self._maxPacketSize = self.HID_OUT_SIZE
         self._hidDevice = hidDevice
 
     @property
@@ -87,22 +87,45 @@ class EFM8BootloaderHID(EFM8Bootloader):
         """
         Send data to the HID bootloader.
         """
-        data = bytes(data)
+        data = bytearray(data)
         assert(len(data) <= self._maxPacketSize)
+
+        # Pad to match HID report size
+        data += bytearray(self._maxPacketSize - len(data))
 
         if DEBUG_ENABLED:
             print("Writing to device -> ")
             hexdump(bytes(data))
-        self._hidDevice.send_feature_report(data)
+
+        # Need to send the data over the control endpoint (EP0), the behaviour
+        # of the HID drivers differs between platforms.
+        if 'win' in sys.platform:
+            # On windows, the windows HID driver will use the EP0 if we
+            # send an output report to the interface, and won't allow data to
+            # be send using send_feature_report().
+            self._hidDevice.write(data)
+        else:
+            # On Linux the using write()/read() on the HID Device don't use
+            # EP0, instead they use the endpoints associated with the HID
+            # interface.
+            # To write to the HID device on Linux, need to use
+            # send_feature_report() as this will be send across EP0.
+            self._hidDevice.send_feature_report(data)
 
     def _read(self, size):
         """
         Read data from the efm8 bootloader.
         """
-        assert(size <= HID_IN_SIZE)
+        assert(size <= self.HID_IN_SIZE)
         if DEBUG_ENABLED:
             print("Read from device -> ")
-        data = self._hidDevice.get_feature_report(size)
+
+        # NOTE: Force reads to match HID_IN_SIZE
+        # NOTE: See note in `_write()` function above
+        if 'win' in sys.platform:
+            data = self._hidDevice.read(self.HID_IN_SIZE)
+        else:
+            data = self._hidDevice.get_feature_report(self.HID_IN_SIZE)
 
         if DEBUG_ENABLED:
             hexdump(bytes(data))

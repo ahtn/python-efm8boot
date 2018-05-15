@@ -57,11 +57,11 @@ class Record(object):
         # to add +1 for the command ID.
         length = len(self.data) + 1
 
-        return bytes([
+        return bytearray([
             FRAME_START_BYTE, # first byte frame start byte 0x24
             length,
             self.cmd,
-        ]) + bytes(self.data)
+        ]) + bytearray(self.data)
 
 class IdentifyRecord(Record):
     """
@@ -102,7 +102,7 @@ class EraseRecord(Record):
     def __init__(self, addr, data):
         address = struct.pack('> H', addr)
         assert(0 <= len(data) <= 128)
-        record_data = address + bytes(data)
+        record_data = address + bytearray(data)
         super(EraseRecord, self).__init__(CMD_ERASE, record_data)
 
 class WriteRecord(Record):
@@ -119,7 +119,7 @@ class WriteRecord(Record):
     def __init__(self, addr, data):
         address = struct.pack('> H', addr)
         assert(1 <= len(data) <= 128)
-        record_data = address + bytes(data)
+        record_data = address + bytearray(data)
         super(WriteRecord, self).__init__(CMD_WRITE, record_data)
 
 class VerifyRecord(Record):
