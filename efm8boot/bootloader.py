@@ -241,7 +241,7 @@ class EFM8Bootloader(object):
             if curAddr < nextPage:
                 continue
 
-            pageStart = math.floor(curAddr / self.info.pageSize) * self.info.pageSize
+            pageStart = int(math.floor(curAddr / self.info.pageSize) * self.info.pageSize)
             newPage = ihex.tobinstr(start=pageStart, size=self.info.pageSize)
             pages.append((pageStart, newPage))
 
