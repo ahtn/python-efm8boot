@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 
 here = path.abspath(path.dirname(__file__))
 
@@ -31,15 +31,10 @@ setup(
     long_description=long_description,
     url='https://github.com/ahtn/efm8boot',
     download_url='https://github.com/ahtn/efm8boot/tarball/' + __version__,
-    license='BSD',
-    classifiers=[
-      'Development Status :: 3 - Alpha',
-      'Intended Audience :: Developers',
-      'Programming Language :: Python :: 3',
-    ],
+    license='MIT',
     keywords='efm8 bootloader 8051',
     packages=find_packages(exclude=['docs', 'tests*']),
-    scripts = ['scripts/efm8boot-cli.py'],
+    scripts = ['scripts/efm8boot-cli'],
     include_package_data=True,
     author='jem',
     install_requires=install_requires,
